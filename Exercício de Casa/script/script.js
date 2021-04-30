@@ -51,5 +51,55 @@ let books = [
         title: "Designing Evolvable Web APIs with ASP.NET",
         author: "Glenn Block, et al.",
         published: "2014-04-07T00:00:00.000Z",
-    }
+    },     
 ]
+
+document.querySelector('#enviar').addEventListener('click', function verificarCampos(event){
+    event.preventDefault();
+    let titulo = document.getElementById('titulo');
+    let autor = document.getElementById('autor');
+    let isbn = document.getElementById('isbn');
+    let dataDePublicacao = document.getElementById('data-de-publicacao');
+    let aviso = document.getElementById('texto-de-erro');
+
+    titulo.value === '' || autor.value === '' || isbn.value === '' || dataDePublicacao.value === '' ? aviso.innerText = 'Existem campos obrigatórios em branco.' : aviso.innerText = 'Dados salvos com sucesso.';
+
+    limparCampos();
+});
+
+function limparCampos() {
+    document.getElementById('titulo').value = '';
+    document.getElementById('autor').value = '';
+    document.getElementById('isbn').value = '';
+    document.getElementById('data-de-publicacao').value = '';
+}
+
+// a conversão de strings com o construtor de Date (Date.parse é equivalente ao contrutor) é fortemente desencorajada devido às inconsistências e diferenças dos navegadores
+
+
+function mostrarLivros() {
+    let data = new Date(books.published);
+    console.log(data);
+    let mostraLivro = books.map(book => `<li><div id='livro'><strong>ISBN:</strong> ${book.isbn} <strong>Título:</strong>${book.title} <strong>Autor:</strong> ${book.author} <strong>Publicação:</strong>  ${book.published} <button class="deletar">Deletar livro</button></div> </li>`).join('\n');
+    document.querySelector('ul').innerHTML = mostraLivro;
+}
+
+mostrarLivros();
+
+document.querySelector('ul').addEventListener('click', function apagarLivro(event){
+    if (event.target.className === "deletar"){
+        let btn = event.target.parentElement;
+        btn.parentElement.remove();
+    };
+})
+
+function salvarLivros() {
+
+    let pegaTitulo = document.getElementById('titulo').value;
+    let pegaAutor = document.getElementById('autor').value;
+    let pegaIsbn = document.getElementById('isbn').value;
+    let pegaData = document.getElementById('data-de-publicacao').value;
+
+    books.push({"isbn": pegaIsbn, "title": pegaTitulo, "author": pegaAutor, "published": pegaData});    
+    mostrarLivros();
+}
